@@ -30,4 +30,8 @@ class AccountMoveLine(models.Model):
                     f"{sequence[1]}/{sequence[0]}" for sequence in sequences
                 )
             else:
-                rec.related_so_sequence = str(rec.sale_line_ids.visible_sequence)
+                rec.related_so_sequence = (
+                    str(rec.sale_line_ids.visible_sequence)
+                    if rec.sale_line_ids.visible_sequence
+                    else ""
+                )
