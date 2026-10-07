@@ -144,11 +144,11 @@ class TestSaleOrderLineSequence(BaseCommon):
         self.assertEqual(so.max_line_sequence, max(so.order_line.mapped("sequence")) + 1)
 
     def test_form_view_columns(self):
-        """The stored line number is shown unless the native Odoo 20 numbering is on."""
+        """The stored line number replaces the native (running counter) column."""
         arch = self.sale_order.get_view(self.env.ref("sale.view_order_form").id)["arch"]
         self.assertIn("visible_sequence", arch)
         self.assertIn("default_sequence", arch)
-        self.assertIn("parent.show_sol_numbers", arch)
+        self.assertNotIn("parent.show_sol_numbers", arch)
 
     def test_post_init_hook_enables_native_numbers(self):
         from odoo.addons.sale_order_line_sequence import post_init_hook
@@ -169,3 +169,67 @@ class TestSaleOrderLineSequence(BaseCommon):
         )[0].decode()
         self.assertIn("th_related_so_sequence", html)
         self.assertIn("td_related_so_sequence", html)
+
+    def _mixed_order(self):
+        """section, product B (1), product A (2), note: sequences reordered on purpose"""
+        so = self.sale_order.create(
+            {
+                "partner_id": self.partner.id,
+                "order_line": [
+                    Command.create({"product_id": self.product.id, "product_uom_qty": 1, "sequence": 30}),
+                    Command.create({"display_type": "line_section", "name": "Section", "sequence": 10}),
+                    Command.create({"product_id": self.product_2.id, "product_uom_qty": 1, "sequence": 20}),
+                    Command.create({"display_type": "line_note", "name": "Note", "sequence": 40}),
+                ],
+            }
+        )
+        so.invalidate_recordset()  # read the lines back in database order
+        return so
+
+    def _printed_numbers(self, html):
+        from lxml import html as lxml_html
+
+        tree = lxml_html.fromstring(html)
+        out = {}
+        for kind in ("section", "note", "product"):
+            out[kind] = [
+                "".join(td.itertext()).strip()
+                for td in tree.xpath(f"//td[@name='td_{kind}_line_no']")
+            ]
+        return out
+
+    def test_printed_numbers_follow_visible_sequence(self):
+        self.env.company.sudo().show_sol_numbers = True
+        so = self._mixed_order()
+        lines = so.order_line.sorted("sequence")
+        self.assertEqual(lines.mapped("visible_sequence"), [0, 1, 2, 0])
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "sale.action_report_saleorder", so.ids
+        )[0].decode()
+        numbers = self._printed_numbers(html)
+        self.assertEqual(numbers["product"], ["1", "2"])
+        self.assertEqual(numbers["section"], [""])
+        self.assertEqual(numbers["note"], [""])
+        # reorder: numbers follow
+        so.order_line.filtered(lambda line: line.product_id == self.product).sequence = 5
+        so.invalidate_recordset()
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "sale.action_report_saleorder", so.ids
+        )[0].decode()
+        self.assertEqual(self._printed_numbers(html)["product"], ["1", "2"])
+        self.assertEqual(
+            so.order_line.sorted("sequence").filtered("product_id").mapped("product_id.id"),
+            [self.product.id, self.product_2.id],
+        )
+
+    def test_invoice_number_matches_visible_sequence(self):
+        so = self._mixed_order()
+        so.action_confirm()
+        so.order_line.filtered("product_id").qty_delivered = 1
+        invoice = so._create_invoices()
+        product_lines = invoice.invoice_line_ids.filtered("product_id")
+        for line in product_lines:
+            self.assertEqual(
+                line.related_so_sequence, str(line.sale_line_ids.visible_sequence)
+            )
+        self.assertEqual(sorted(product_lines.mapped("related_so_sequence")), ["1", "2"])

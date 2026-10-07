@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Keep the native Odoo 20 numbering column/header/switch (company setting
+         show_sol_numbers) but print the stored line number (visible_sequence)
+         instead of the native running counter, so the document number is the
+         same as in the backend and on the invoices (related_so_sequence). -->
+    <template
+        id="sale_order_portal_content_sequence"
+        inherit_id="sale.sale_order_portal_content"
+    >
+        <xpath
+            expr="//td[@name='td_section_line_no']/span[@t-out='line_counter']"
+            position="replace"
+        >
+            <span t-if="line.visible_sequence" t-out="line.visible_sequence" />
+        </xpath>
+        <xpath
+            expr="//td[@name='td_note_line_no']/span[@t-out='line_counter']"
+            position="replace"
+        >
+            <span t-if="line.visible_sequence" t-out="line.visible_sequence" />
+        </xpath>
+        <xpath
+            expr="//td[@name='td_combo_line_no']/span[@t-out='line_counter']"
+            position="replace"
+        >
+            <span t-if="line.visible_sequence" t-out="line.visible_sequence" />
+        </xpath>
+        <xpath
+            expr="//td[@name='td_product_line_no']/span[@t-out='line_counter']"
+            position="replace"
+        >
+            <span t-if="line.visible_sequence" t-out="line.visible_sequence" />
+        </xpath>
+        <!-- collapsed groups summarise several lines: no single line number -->
+        <xpath
+            expr="//td[@name='td_section_group_line_no']/span[@t-out='line_counter']"
+            position="replace"
+        />
+    </template>
+</odoo>

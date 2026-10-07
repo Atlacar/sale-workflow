@@ -10,19 +10,19 @@
                     name="context"
                 >{'default_sequence': max_line_sequence}</attribute>
             </field>
-            <!-- Odoo 20 can show its own line numbers (company setting
-                 "Line Numbers", show_sol_numbers). When it is enabled the native
-                 column is displayed, otherwise show the stored visible_sequence. -->
+            <!-- Odoo 20's native line_number widget counts sections and notes too:
+                show the stored line number (same as PDF, portal and invoices). -->
+            <xpath
+                expr="//field[@name='order_line']/list/widget[@name='line_number']"
+                position="attributes"
+            >
+                <attribute name="column_invisible">True</attribute>
+            </xpath>
             <xpath
                 expr="//field[@name='order_line']/list/widget[@name='line_number']"
                 position="after"
             >
-                <field
-                    name="visible_sequence"
-                    string="#"
-                    optional="show"
-                    column_invisible="parent.show_sol_numbers"
-                />
+                <field name="visible_sequence" string="#" optional="show" />
             </xpath>
         </field>
     </record>

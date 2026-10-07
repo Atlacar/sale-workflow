@@ -12,6 +12,8 @@
     "license": "AGPL-3",
     "data": [
         "views/sale_view.xml",
+        "views/report_saleorder.xml",
+        "views/sale_portal_templates.xml",
         "views/account_move_view.xml",
         "views/report_invoice.xml",
     ],

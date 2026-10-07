@@ -5,8 +5,9 @@ from odoo.tests import HttpCase, tagged
 
 @tagged("post_install", "-at_install")
 class TestSaleOrderLineSequenceUI(HttpCase):
-    """Browser check of the quotation form: the stored line number column is shown,
-    unless the native Odoo 20 numbering (company setting) is enabled."""
+    """Browser check of the quotation form: the stored line number column is shown and
+    the native running-counter column is hidden, whatever the company setting is.
+    The portal prints the stored numbers too."""
 
     CODE = """
         (async () => {
@@ -43,8 +44,8 @@ class TestSaleOrderLineSequenceUI(HttpCase):
     def _check(self, show_native):
         self.env.company.show_sol_numbers = show_native
         code = self.CODE % {
-            "own": "false" if show_native else "true",
-            "native": "true" if show_native else "false",
+            "own": "true",  # the stored number column is always shown
+            "native": "false",  # the native counter column is hidden
         }
         self.browser_js(
             f"/odoo/action-sale.action_orders/{self.order.id}",
@@ -57,3 +58,26 @@ class TestSaleOrderLineSequenceUI(HttpCase):
 
     def test_native_column(self):
         self._check(True)
+
+    def test_portal_numbers(self):
+        from lxml import html as lxml_html
+
+        self.env.company.show_sol_numbers = True
+        order = self.env["sale.order"].create({
+            "partner_id": self.order.partner_id.id,
+            "order_line": [
+                (0, 0, {"display_type": "line_section", "name": "Section", "sequence": 10}),
+                (0, 0, {"product_id": self.order.order_line[0].product_id.id, "product_uom_qty": 1, "sequence": 30}),
+                (0, 0, {"product_id": self.order.order_line[0].product_id.id, "product_uom_qty": 1, "sequence": 20}),
+                (0, 0, {"display_type": "line_note", "name": "Note", "sequence": 40}),
+            ],
+        })
+        response = self.url_open(order.get_portal_url())
+        self.assertEqual(response.status_code, 200)
+        tree = lxml_html.fromstring(response.content)
+        for kind, expected in (("product", ["1", "2"]), ("section", [""]), ("note", [""])):
+            texts = [
+                "".join(td.itertext()).strip()
+                for td in tree.xpath(f"//td[@name='td_{kind}_line_no']")
+            ]
+            self.assertEqual(texts, expected, kind)
