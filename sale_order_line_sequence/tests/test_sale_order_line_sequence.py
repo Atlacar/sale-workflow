@@ -131,3 +131,67 @@ class TestSaleOrderLineSequence(BaseCommon):
         self.assertEqual(
             invoice.line_ids[0].related_so_sequence, f"{so.name}/1, {so2.name}/2"
         )
+
+    def test_invoice_line_without_sale_line_has_empty_number(self):
+        invoice = self.account_move.create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_line_ids": [
+                    Command.create({"name": "Manual line", "quantity": 1, "price_unit": 5})
+                ],
+            }
+        )
+        self.assertEqual(invoice.invoice_line_ids.related_so_sequence, "")
+
+    def _mixed_order(self):
+        """section, product B (1), product A (2), note: sequences reordered on purpose"""
+        so = self.sale_order.create(
+            {
+                "partner_id": self.partner.id,
+                "order_line": [
+                    Command.create(
+                        {"product_id": self.product.id, "product_uom_qty": 1, "sequence": 30}
+                    ),
+                    Command.create(
+                        {"display_type": "line_section", "name": "Section", "sequence": 10}
+                    ),
+                    Command.create(
+                        {"product_id": self.product_2.id, "product_uom_qty": 1, "sequence": 20}
+                    ),
+                    Command.create(
+                        {"display_type": "line_note", "name": "Note", "sequence": 40}
+                    ),
+                ],
+            }
+        )
+        so.invalidate_recordset()
+        return so
+
+    def test_report_numbers_follow_visible_sequence(self):
+        so = self._mixed_order()
+        lines = so.order_line.sorted("sequence")
+        self.assertEqual(lines.mapped("visible_sequence"), [0, 1, 2, 0])
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "sale.action_report_saleorder", so.ids
+        )[0].decode()
+        from lxml import html as lxml_html
+
+        tree = lxml_html.fromstring(html)
+        numbers = [
+            "".join(td.itertext()).strip()
+            for td in tree.xpath("//td[@name='td_visible_sequence']")
+        ]
+        self.assertEqual([n for n in numbers if n], ["1", "2"])
+
+    def test_invoice_number_matches_visible_sequence(self):
+        so = self._mixed_order()
+        so.action_confirm()
+        so.order_line.filtered("product_id").qty_delivered = 1
+        invoice = so._create_invoices()
+        product_lines = invoice.invoice_line_ids.filtered("product_id")
+        for line in product_lines:
+            self.assertEqual(
+                line.related_so_sequence, str(line.sale_line_ids.visible_sequence)
+            )
+        self.assertEqual(sorted(product_lines.mapped("related_so_sequence")), ["1", "2"])
