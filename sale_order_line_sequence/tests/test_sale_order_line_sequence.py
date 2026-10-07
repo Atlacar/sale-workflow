@@ -9,6 +9,13 @@ from odoo.addons.base.tests.common import BaseCommon
 
 @tagged("post_install", "-at_install")
 class TestSaleOrderLineSequence(BaseCommon):
+    # Odoo 20 runs BaseCommon tests with an independent user: give it the rights
+    # needed to create and invoice sale orders.
+    _test_user_groups = (
+        "sales_team.group_sale_manager",
+        "account.group_account_invoice",
+    )
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -131,3 +138,34 @@ class TestSaleOrderLineSequence(BaseCommon):
         self.assertEqual(
             invoice.line_ids[0].related_so_sequence, f"{so.name}/1, {so2.name}/2"
         )
+
+    def test_max_line_sequence(self):
+        so = self._create_sale_order()
+        self.assertEqual(so.max_line_sequence, max(so.order_line.mapped("sequence")) + 1)
+
+    def test_form_view_columns(self):
+        """The stored line number is shown unless the native Odoo 20 numbering is on."""
+        arch = self.sale_order.get_view(self.env.ref("sale.view_order_form").id)["arch"]
+        self.assertIn("visible_sequence", arch)
+        self.assertIn("default_sequence", arch)
+        self.assertIn("parent.show_sol_numbers", arch)
+
+    def test_post_init_hook_enables_native_numbers(self):
+        from odoo.addons.sale_order_line_sequence import post_init_hook
+
+        company = self.env.company.sudo()
+        company.show_sol_numbers = False
+        post_init_hook(self.env(su=True))  # the hook runs as superuser
+        self.assertTrue(company.show_sol_numbers)
+
+    def test_invoice_report_sequence_column(self):
+        so = self._create_sale_order()
+        so.action_confirm()
+        so.order_line.qty_delivered = 5
+        invoice = so._create_invoices()
+        invoice.action_post()
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "account.report_invoice", invoice.ids
+        )[0].decode()
+        self.assertIn("th_related_so_sequence", html)
+        self.assertIn("td_related_so_sequence", html)

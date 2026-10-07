@@ -4,19 +4,30 @@
         id="report_invoice_document_inherit_sale_sequence"
         inherit_id="account.report_invoice_document"
     >
-        <!--complicated expr to be compatible with other modules-->
-        <xpath expr="//table/thead/tr/th[1]" position="before">
-            <th
-                t-if="(o.move_type == 'out_invoice' or o.move_type == 'out_refund') and any(l.related_so_sequence for l in o.invoice_line_ids)"
-            >#</th>
+        <xpath expr="//div[hasclass('table-responsive-sm')]" position="before">
+            <t
+                t-set="show_related_so_sequence"
+                t-value="o.move_type in ('out_invoice', 'out_refund') and any(l.related_so_sequence for l in o.invoice_line_ids)"
+            />
         </xpath>
-        <!--complicated expr to be compatible with other modules-->
-        <xpath expr="//table/tbody//span[1]/.." position="before">
-            <td
-                t-if="(o.move_type == 'out_invoice' or o.move_type == 'out_refund') and line.related_so_sequence"
-            >
+        <xpath expr="//th[@name='th_description']" position="before">
+            <th name="th_related_so_sequence" t-if="show_related_so_sequence">#</th>
+        </xpath>
+        <!-- product rows -->
+        <xpath expr="//td[@name='account_invoice_line_name']" position="before">
+            <td name="td_related_so_sequence" t-if="show_related_so_sequence">
                 <span t-field="line.related_so_sequence" />
             </td>
+        </xpath>
+        <!-- section / subsection rows and grouped (collapsed) rows: keep columns aligned -->
+        <xpath expr="//td[@name='line_name_td']" position="before">
+            <td t-if="show_related_so_sequence" />
+        </xpath>
+        <xpath
+            expr="//td[@name='account_invoice_line_name_grouped_desktop']"
+            position="before"
+        >
+            <td t-if="show_related_so_sequence" />
         </xpath>
     </template>
 </odoo>
