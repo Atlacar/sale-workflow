@@ -170,6 +170,18 @@ class TestSaleOrderLineSequence(BaseCommon):
         self.assertIn("th_related_so_sequence", html)
         self.assertIn("td_related_so_sequence", html)
 
+    def test_invoice_line_without_sale_line_has_empty_number(self):
+        invoice = self.account_move.create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.partner.id,
+                "invoice_line_ids": [
+                    Command.create({"name": "Manual line", "quantity": 1, "price_unit": 5})
+                ],
+            }
+        )
+        self.assertEqual(invoice.invoice_line_ids.related_so_sequence, "")
+
     def _mixed_order(self):
         """section, product B (1), product A (2), note: sequences reordered on purpose"""
         so = self.sale_order.create(
