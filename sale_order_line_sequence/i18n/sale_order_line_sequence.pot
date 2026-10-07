@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 19.0\n"
+"Project-Id-Version: Odoo Server 20.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,11 +12,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-
-#. module: sale_order_line_sequence
-#: model_terms:ir.ui.view,arch_db:sale_order_line_sequence.report_saleorder_document_sequence
-msgid "<strong>#</strong>"
-msgstr ""
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_account_move_line__display_name
@@ -58,8 +53,18 @@ msgid "Max sequence in lines"
 msgstr ""
 
 #. module: sale_order_line_sequence
+#: model:ir.module.module,summary:base.module_sale_order_line_sequence
+msgid "Propagates SO line sequence to invoices and stock picking."
+msgstr ""
+
+#. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_account_move_line__related_so_sequence
 msgid "SO Line Number"
+msgstr ""
+
+#. module: sale_order_line_sequence
+#: model:ir.module.module,shortdesc:base.module_sale_order_line_sequence
+msgid "Sale Order Line Sequence"
 msgstr ""
 
 #. module: sale_order_line_sequence

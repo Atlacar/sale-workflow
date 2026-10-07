@@ -11,25 +11,25 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Language: zh_CN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_account_move_line__display_name
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_sale_order__display_name
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_sale_order_line__display_name
 msgid "Display Name"
-msgstr "显示名称"
+msgstr "Nombre en pantalla"
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,help:sale_order_line_sequence.field_sale_order_line__visible_sequence
 msgid "Displays the sequence of the line in the sale order."
-msgstr "显示该明细行在销售订单中的序号。"
+msgstr "Muestra la secuencia de la línea en la orden de venta."
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,help:sale_order_line_sequence.field_sale_order_line__sequence
 msgid "Gives the sequence of this line when displaying the sale order."
-msgstr "指定显示销售订单时此明细行的顺序。"
+msgstr "Indica la secuencia de esta línea al mostrar la orden de venta."
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_account_move_line__id
@@ -41,44 +41,44 @@ msgstr "ID"
 #. module: sale_order_line_sequence
 #: model:ir.model,name:sale_order_line_sequence.model_account_move_line
 msgid "Journal Item"
-msgstr "日记账项目"
+msgstr "Apunte contable"
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_sale_order_line__visible_sequence
 msgid "Line Number"
-msgstr "行号"
+msgstr "Número de línea"
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_sale_order__max_line_sequence
 msgid "Max sequence in lines"
-msgstr "明细行最大序号"
+msgstr "Secuencia máxima en las líneas"
 
 #. module: sale_order_line_sequence
 #: model:ir.module.module,summary:base.module_sale_order_line_sequence
 msgid "Propagates SO line sequence to invoices and stock picking."
-msgstr "将销售订单明细行的顺序传递到发票和库存调拨单。"
+msgstr "Propaga la secuencia de las líneas de la orden de venta a las facturas y a las transferencias de inventario."
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_account_move_line__related_so_sequence
 msgid "SO Line Number"
-msgstr "销售订单行号"
+msgstr "Número de línea de la OV"
 
 #. module: sale_order_line_sequence
 #: model:ir.module.module,shortdesc:base.module_sale_order_line_sequence
 msgid "Sale Order Line Sequence"
-msgstr "销售订单明细行序号"
+msgstr "Secuencia de líneas de la orden de venta"
 
 #. module: sale_order_line_sequence
 #: model:ir.model,name:sale_order_line_sequence.model_sale_order
 msgid "Sales Order"
-msgstr "销售订单"
+msgstr "Orden de venta"
 
 #. module: sale_order_line_sequence
 #: model:ir.model,name:sale_order_line_sequence.model_sale_order_line
 msgid "Sales Order Line"
-msgstr "销售订单明细"
+msgstr "Línea de la orden de venta"
 
 #. module: sale_order_line_sequence
 #: model:ir.model.fields,field_description:sale_order_line_sequence.field_sale_order_line__sequence
 msgid "Sequence"
-msgstr "序列"
+msgstr "Secuencia"
