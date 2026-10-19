@@ -21,13 +21,17 @@ class SaleOrderLine(models.Model):
         store=True,
     )
 
-    @api.depends("sequence", "order_id.order_line")
+    @api.depends("sequence", "order_id.order_line", "order_id.order_line.product_type")
     def _compute_visible_sequence(self):
         for so in self.mapped("order_id"):
             sequence = 1
+            # A combo line only groups its combo item lines: it is rendered as a
+            # header without number, so it must not consume one.
             order_lines = so.order_line.filtered(
                 lambda order_line: not order_line.display_type
+                and order_line.product_type != "combo"
             )
+            (so.order_line - order_lines).visible_sequence = 0
             for line in sorted(order_lines, key=lambda order_line: order_line.sequence):
                 line.visible_sequence = sequence
                 sequence += 1
