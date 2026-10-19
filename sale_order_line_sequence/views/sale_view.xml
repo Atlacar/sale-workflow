@@ -22,7 +22,12 @@
                 expr="//field[@name='order_line']/list/widget[@name='line_number']"
                 position="after"
             >
-                <field name="visible_sequence" string="#" optional="show" />
+                <field
+                    name="visible_sequence"
+                    string="#"
+                    optional="show"
+                    invisible="product_type == 'combo'"
+                />
             </xpath>
         </field>
     </record>

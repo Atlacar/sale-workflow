@@ -10,10 +10,11 @@ from odoo.addons.base.tests.common import BaseCommon
 @tagged("post_install", "-at_install")
 class TestSaleOrderLineSequence(BaseCommon):
     # Odoo 20 runs BaseCommon tests with an independent user: give it the rights
-    # needed to create and invoice sale orders.
+    # needed to create and invoice sale orders, and to create combo products.
     _test_user_groups = (
         "sales_team.group_sale_manager",
         "account.group_account_invoice",
+        "product.group_product_manager",
     )
 
     @classmethod
@@ -203,7 +204,7 @@ class TestSaleOrderLineSequence(BaseCommon):
 
         tree = lxml_html.fromstring(html)
         out = {}
-        for kind in ("section", "note", "product"):
+        for kind in ("section", "note", "combo", "product"):
             out[kind] = [
                 "".join(td.itertext()).strip()
                 for td in tree.xpath(f"//td[@name='td_{kind}_line_no']")
@@ -245,3 +246,103 @@ class TestSaleOrderLineSequence(BaseCommon):
                 line.related_so_sequence, str(line.sale_line_ids.visible_sequence)
             )
         self.assertEqual(sorted(product_lines.mapped("related_so_sequence")), ["1", "2"])
+
+    def _combo_order(self):
+        """product A (1), combo line (no number), its 2 combo items (2, 3)"""
+        combos = self.env["product.combo"].create(
+            [
+                {
+                    "name": name,
+                    "combo_item_ids": [Command.create({"product_id": product.id})],
+                }
+                for name, product in (("Main", self.product), ("Side", self.product_2))
+            ]
+        )
+        combo_product = self.env["product.product"].create(
+            {
+                "name": "Office Combo",
+                "type": "combo",
+                "list_price": 100.0,
+                "combo_ids": [Command.set(combos.ids)],
+            }
+        )
+        so = self.sale_order.create(
+            {
+                "partner_id": self.partner.id,
+                "order_line": [
+                    Command.create(
+                        {
+                            "product_id": self.product.id,
+                            "product_uom_qty": 1,
+                            "sequence": 10,
+                        }
+                    ),
+                    Command.create(
+                        {
+                            "product_id": combo_product.id,
+                            "product_uom_qty": 1,
+                            "sequence": 20,
+                        }
+                    ),
+                ],
+            }
+        )
+        combo_line = so.order_line.filtered(lambda line: line.product_type == "combo")
+        so.order_line = [
+            Command.create(
+                {
+                    "product_id": combo.combo_item_ids.product_id.id,
+                    "product_uom_qty": 1,
+                    "sequence": 20 + index,
+                    "combo_item_id": combo.combo_item_ids.id,
+                    "linked_line_id": combo_line.id,
+                }
+            )
+            for index, combo in enumerate(combos, start=1)
+        ]
+        so.invalidate_recordset()
+        return so, combo_line
+
+    def test_combo_line_has_no_number(self):
+        self.env.company.sudo().show_sol_numbers = True
+        so, combo_line = self._combo_order()
+        lines = so.order_line.sorted("sequence")
+        self.assertEqual(lines.mapped("visible_sequence"), [1, 0, 2, 3])
+        self.assertFalse(combo_line.visible_sequence)
+        html = (
+            self.env["ir.actions.report"]
+            ._render_qweb_html("sale.action_report_saleorder", so.ids)[0]
+            .decode()
+        )
+        numbers = self._printed_numbers(html)
+        self.assertEqual(numbers["combo"], [""])
+        self.assertEqual(numbers["product"], ["1", "2", "3"])
+
+    def test_combo_invoice_numbers(self):
+        so, combo_line = self._combo_order()
+        so.action_confirm()
+        so.order_line.qty_delivered = 1
+        invoice = so._create_invoices()
+        combo_section = invoice.invoice_line_ids.filtered(
+            lambda line: line.sale_line_ids == combo_line
+        )
+        self.assertEqual(combo_section.display_type, "line_section")
+        self.assertEqual(combo_section.related_so_sequence, "")
+        self.assertEqual(
+            sorted(invoice.invoice_line_ids.mapped("related_so_sequence")),
+            ["", "1", "2", "3"],
+        )
+        invoice.action_post()
+        html = (
+            self.env["ir.actions.report"]
+            ._render_qweb_html("account.report_invoice", invoice.ids)[0]
+            .decode()
+        )
+        from lxml import html as lxml_html
+
+        tree = lxml_html.fromstring(html)
+        numbers = [
+            "".join(td.itertext()).strip()
+            for td in tree.xpath("//td[@name='td_related_so_sequence']")
+        ]
+        self.assertEqual(numbers, ["1", "2", "3"])
