@@ -1,6 +1,6 @@
 [project]
 name = "odoo-addons-oca-sale-workflow"
-version = "18.0.20260826.0"
+version = "18.0.20261013.1"
 dependencies = [
     "odoo-addon-partner_prospect==18.0.*",
     "odoo-addon-partner_sale_pivot==18.0.*",
@@ -16,6 +16,7 @@ dependencies = [
     "odoo-addon-product_set_sell_only_by_packaging==18.0.*",
     "odoo-addon-sale_advance_payment==18.0.*",
     "odoo-addon-sale_attached_product==18.0.*",
+    "odoo-addon-sale_auto_remove_zero_quantity_lines==18.0.*",
     "odoo-addon-sale_automatic_workflow==18.0.*",
     "odoo-addon-sale_automatic_workflow_auto_assign==18.0.*",
     "odoo-addon-sale_automatic_workflow_force_invoiced==18.0.*",
@@ -58,6 +59,7 @@ dependencies = [
     "odoo-addon-sale_mrp_bom==18.0.*",
     "odoo-addon-sale_multi_template_application==18.0.*",
     "odoo-addon-sale_no_portal_button==18.0.*",
+    "odoo-addon-sale_order_add_byproduct==18.0.*",
     "odoo-addon-sale_order_amount_to_invoice==18.0.*",
     "odoo-addon-sale_order_archive==18.0.*",
     "odoo-addon-sale_order_cancel_optional_email==18.0.*",
@@ -132,6 +134,7 @@ dependencies = [
     "odoo-addon-sale_pricelist_packaging==18.0.*",
     "odoo-addon-sale_probability_amount==18.0.*",
     "odoo-addon-sale_procurement_group_by_line==18.0.*",
+    "odoo-addon-sale_product_catalog_extended==18.0.*",
     "odoo-addon-sale_product_identification==18.0.*",
     "odoo-addon-sale_product_multi_add==18.0.*",
     "odoo-addon-sale_product_set==18.0.*",
