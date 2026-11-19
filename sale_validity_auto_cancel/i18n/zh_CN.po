@@ -1,0 +1,123 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_validity_auto_cancel
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0+e-20261118\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 15:14+0000\n"
+"PO-Revision-Date: 2026-11-19 15:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: Chinese (Simplified)\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_validity_auto_cancel
+#: model_terms:ir.ui.view,arch_db:sale_validity_auto_cancel.res_config_settings_view_form
+msgid "<span> days</span>"
+msgstr "<span> 天</span>"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_sale_order__auto_cancel_expired_so
+msgid "Auto Cancel"
+msgstr "自动取消"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_partner__auto_cancel_expired_so
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_users__auto_cancel_expired_so
+msgid "Auto Cancel Expired SaleOrder"
+msgstr "自动取消已过期的销售订单"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_company__sale_validity_auto_cancel_days
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_config_settings__sale_validity_auto_cancel_days
+msgid "Auto-cancel expired quotations after (days)"
+msgstr "过期报价单自动取消天数（天）"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.module.module,summary:base.module_sale_validity_auto_cancel
+msgid "Automatically cancel quotations after validity period."
+msgstr "有效期结束后自动取消报价单。"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.actions.server,name:sale_validity_auto_cancel.cron_sale_validity_auto_cancel_ir_actions_server
+msgid "Cancel Expired Quotations"
+msgstr "取消已过期的报价单"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model,name:sale_validity_auto_cancel.model_res_company
+msgid "Company"
+msgstr "公司"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model,name:sale_validity_auto_cancel.model_res_config_settings
+msgid "Config Settings"
+msgstr "配置设置"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model,name:sale_validity_auto_cancel.model_res_partner
+msgid "Contact"
+msgstr "联系人"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_company__display_name
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_partner__display_name
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_sale_order__display_name
+msgid "Display Name"
+msgstr "显示名称"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_company__id
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_config_settings__id
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_res_partner__id
+#: model:ir.model.fields,field_description:sale_validity_auto_cancel.field_sale_order__id
+msgid "ID"
+msgstr "ID"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,help:sale_validity_auto_cancel.field_res_partner__auto_cancel_expired_so
+#: model:ir.model.fields,help:sale_validity_auto_cancel.field_res_users__auto_cancel_expired_so
+#: model:ir.model.fields,help:sale_validity_auto_cancel.field_sale_order__auto_cancel_expired_so
+msgid ""
+"If unchecked, you will be able to restrict \n"
+"this contact's expired SO from being auto-canceled."
+msgstr ""
+"取消勾选后，可以禁止自动取消\n"
+"该联系人已过期的销售订单。"
+
+#. module: sale_validity_auto_cancel
+#: model_terms:ir.ui.view,arch_db:sale_validity_auto_cancel.res_config_settings_view_form
+msgid ""
+"Quotations will be automatically cancelled after the expiration date plus "
+"the number of days specified."
+msgstr "报价单将在到期日加上指定天数后自动取消。"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.fields,help:sale_validity_auto_cancel.field_res_company__sale_validity_auto_cancel_days
+#: model:ir.model.fields,help:sale_validity_auto_cancel.field_res_config_settings__sale_validity_auto_cancel_days
+msgid ""
+"Quotations will be cancelled after the specified number of days since the "
+"expiration date."
+msgstr "报价单将在到期日之后经过指定天数时被取消。"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.module.module,shortdesc:base.module_sale_validity_auto_cancel
+msgid "Sale Validity Auto-Cancel"
+msgstr "销售有效期自动取消"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model,name:sale_validity_auto_cancel.model_sale_order
+msgid "Sales Order"
+msgstr "销售订单"
+
+#. module: sale_validity_auto_cancel
+#: model:ir.model.constraint,message:sale_validity_auto_cancel.constraint_res_company_check_sale_validity_auto_cancel_days_positive
+msgid ""
+"The value of the field 'Auto-cancel expired quotations after' must be "
+"positive or 0."
+msgstr "字段“过期报价单自动取消天数”的值必须为正数或 0。"

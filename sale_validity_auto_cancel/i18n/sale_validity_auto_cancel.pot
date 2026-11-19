@@ -4,8 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 19.0\n"
+"Project-Id-Version: Odoo Server 20.0+e-20261118\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-19 15:14+0000\n"
+"PO-Revision-Date: 2026-11-19 15:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,13 +38,18 @@ msgid "Auto-cancel expired quotations after (days)"
 msgstr ""
 
 #. module: sale_validity_auto_cancel
+#: model:ir.module.module,summary:base.module_sale_validity_auto_cancel
+msgid "Automatically cancel quotations after validity period."
+msgstr ""
+
+#. module: sale_validity_auto_cancel
 #: model:ir.actions.server,name:sale_validity_auto_cancel.cron_sale_validity_auto_cancel_ir_actions_server
 msgid "Cancel Expired Quotations"
 msgstr ""
 
 #. module: sale_validity_auto_cancel
 #: model:ir.model,name:sale_validity_auto_cancel.model_res_company
-msgid "Companies"
+msgid "Company"
 msgstr ""
 
 #. module: sale_validity_auto_cancel
@@ -53,11 +60,6 @@ msgstr ""
 #. module: sale_validity_auto_cancel
 #: model:ir.model,name:sale_validity_auto_cancel.model_res_partner
 msgid "Contact"
-msgstr ""
-
-#. module: sale_validity_auto_cancel
-#: model:ir.model,website_form_label:sale_validity_auto_cancel.model_res_partner
-msgid "Create a Customer"
 msgstr ""
 
 #. module: sale_validity_auto_cancel
@@ -98,6 +100,11 @@ msgstr ""
 msgid ""
 "Quotations will be cancelled after the specified number of days since the "
 "expiration date."
+msgstr ""
+
+#. module: sale_validity_auto_cancel
+#: model:ir.module.module,shortdesc:base.module_sale_validity_auto_cancel
+msgid "Sale Validity Auto-Cancel"
 msgstr ""
 
 #. module: sale_validity_auto_cancel
