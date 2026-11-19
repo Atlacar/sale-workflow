@@ -11,6 +11,14 @@ from odoo.addons.base.tests.common import BaseCommon
 
 
 class TestSaleValidityAutoCancel(BaseCommon):
+    # Odoo 20 runs BaseCommon tests with an independent user: give it the rights
+    # needed to create sale orders and to configure the companies and contacts.
+    _test_user_groups = (
+        "sales_team.group_sale_manager",
+        "base.group_partner_manager",
+        "base.group_erp_manager",
+    )
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -36,7 +44,8 @@ class TestSaleValidityAutoCancel(BaseCommon):
                 )
             ],
         }
-        so = self.SaleOrder.create(vals)
+        # The independent test user has no access to the second company.
+        so = self.SaleOrder.sudo().with_company(company).create(vals)
         return so
 
     def test__prepare_auto_cancel_expired_domain(self):
